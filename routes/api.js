@@ -56,15 +56,14 @@ module.exports = function (app) {
       }
     })
   }).put((req, res) => {
-    const { report_id } = req.body
+    const { thread_id } = req.body
     const board = req.params.board
-    console.log(board);
     BoardModel.findOne({ name: board}, (err, boardData) => {
       if(!boardData) {
         res.send("Board not found")
       } else {
         const date = new Date()
-        let reportedThread = boardData.threads.id(report_id)
+        let reportedThread = boardData.threads.id(thread_id)
         reportedThread.reported = true
         reportedThread.bumped_on = date
         boardData.save((err, updateData) => {
@@ -130,10 +129,11 @@ module.exports = function (app) {
       if(!boardData) {
         res.json("Board not found")
       } else {
+        const date = new Date()
         const thread = boardData.threads.id(thread_id)
         const reply = thread.replies.id(reply_id)
         reply.reported = true
-        reply.bumped_on = new Date()
+        reply.bumped_on = date
         boardData.save((err, updatedData) => {
           if(!err) {
             res.send("Success")
@@ -146,18 +146,18 @@ module.exports = function (app) {
     const board = req.params.board
     BoardModel.findOne({name: board}, (err, boardData) => {
       if(!boardData) {
-        res.json("Board not found")
+        return res.json("Board not found")
       } else {
         const thread = boardData.threads.id(thread_id)
         const reply = thread.replies.id(reply_id)
         if(reply.delete_password === delete_password) {
           reply.remove()
         } else {
-          res.send("Incorrect Password")
+          return res.send("Incorrect Password")
         }
         boardData.save((err, updatedData) => {
           if(!err) {
-            res.send("Success")
+            return res.send("success")
           }
         })
       }

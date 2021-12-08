@@ -12,13 +12,6 @@ require("./db-connection")
 
 const app = express();
 
-app.use('/public', express.static(process.cwd() + '/public'));
-
-app.use(cors({origin: '*'})); //For FCC testing purposes only
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(helmet.frameguard());
 app.use(
   helmet.referrerPolicy({
@@ -28,6 +21,13 @@ app.use(
 app.use(
   helmet.dnsPrefetchControl()
 );
+
+app.use('/public', express.static(process.cwd() + '/public'));
+
+app.use(cors({origin: '*'})); //For FCC testing purposes only
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //Sample front-end
 app.route('/b/:board/')
